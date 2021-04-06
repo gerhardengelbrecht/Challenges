@@ -1,0 +1,54 @@
+<ng-container *ngIf="!compaignLoading">
+    <mat-toolbar class="toolbar">
+        <span>mweb.</span>
+    </mat-toolbar>
+    <div fxLayout="column" class="main" fxLayoutAlign="center center">
+        <h1>Select Fibre Campaign</h1>
+        <p class="message">Select the fibre campaign for which products should be loaded</p>
+        <div fxLayout.gt-md="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between" fxLayoutGap="20px">
+            <button mat-raised-button class="custom-btn" *ngFor="let compaign of compaigns; index as i" (click)="selectCompaign(i)">{{compaign.name}}</button>
+        </div>
+    </div>
+    <div>
+        <ng-container *ngIf="productsLoading">
+            <div fxLayout="column" fxLayoutAlign="center center">
+                <mat-spinner class="main"></mat-spinner>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!productsLoading">
+            <div class="content">
+                <div class="filters" *ngIf="providers.length > 0" fxLayout.gt-md="row" fxLayoutAlign.gt-md="center center" fxLayout.lt-sm="column">
+                    <mat-form-field appearance="fill" class="filter" fxFlex.gt-md="50%" fxFlex.lt-sm="100%">
+                        <mat-label>Providers</mat-label>
+                        <mat-select [(ngModel)]="selectedProvide" multiple (selectionChange)="checking()">
+                          <mat-option *ngFor="let provider of providers" [value]="provider">{{provider}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="filter" fxFlex.gt-md="25%" fxFlex.lt-sm="100%">
+                        <mat-label>Price</mat-label>
+                        <mat-select [(ngModel)]="selectedPrice">
+                            <mat-option [value]="null">All</mat-option>
+                            <mat-option *ngFor="let price of priceRange" [value]="price">{{price.label}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="products" [ngStyle.lt-sm]="{'padding': '0px'}">
+                    <div fxLayout="row row-wrap" fxLayoutAlign="center">
+                        <mat-card fxFlex.gt-md="45%" fxFlex.lt-sm="100%" class="product mat-elevation-z4" *ngFor="let product of summarizedProducts | provider : selectedProvide | price: selectedPrice">
+                            <div fxLayout="column">
+                                <h3 class="mat-body-strong">{{product.productName}}</h3>
+                                <p>Provider {{product.provider}}</p>
+                                <h1 class="mat-h1">R{{product.productRate}}</h1>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
+<ng-container *ngIf="compaignLoading">
+    <div class="loading-screen" fxLayout="column" fxLayoutAlign="center center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
